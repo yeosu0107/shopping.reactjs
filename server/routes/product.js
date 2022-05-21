@@ -41,6 +41,19 @@ router.post('/image', (req, res) => {
     })
 })
 
+// 상품 정보 조회
+router.post('/products', (req, res) => {
+    Product.find()
+    .populate("writer")
+    .exec((err, productInfo) => {
+        if(err) {
+            return res.status(400).json({success:false, err})
+        }
+
+        return res.status(200).json({success: true, productInfo})
+    })
+})
+
 // 이미지 파일 삭제
 router.delete('/image?:filePath', (req, res) => {
     console.log("init delete " + req.query.filePath)
