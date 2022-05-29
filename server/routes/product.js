@@ -45,8 +45,16 @@ router.post('/image', (req, res) => {
 router.post('/products', (req, res) => {
     let index = req.body.index ? parseInt(req.body.index) : 0
     let limit = req.body.limit ? parseInt(req.body.limit) : 8
+    let filterArg = {}
 
-    Product.find()
+    for(let key in req.body.filters) {
+        if(req.body.filters[key].length > 0) {
+            filterArg[key] = req.body.filters[key]
+        }
+    }
+    console.log(filterArg)
+
+    Product.find(filterArg)
         .populate("writer")
         .skip(index)
         .limit(limit)

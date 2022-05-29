@@ -13,7 +13,7 @@ const Continents = [
     {key:4, value: "North America"},
     {key:5, value: "South America"},
     {key:6, value: "Australia"},
-    {key:7, value: "Autarctica"},
+    {key:7, value: "Autarctica"}
 ]
 
 function UploadProductPage(props) {
@@ -46,13 +46,11 @@ function UploadProductPage(props) {
     }
 
     const submitHandler = (event) => {
-        console.log("submit button press")
-
         event.preventDefault()
 
         if(!ProductName || !Description || !Price || !Continent || !Images) {
             return alert("모든 필드를 채워야 업로드가 가능합니다.")
-        }
+        }      
 
         // 서버에 필드를 업로드
         const body = {
@@ -60,7 +58,7 @@ function UploadProductPage(props) {
             title: ProductName,
             description: Description,
             price: Price,
-            continent: Continents[Continent].value,
+            continent: Continents[Continent-1].key,
             images: Images,
         }
 
