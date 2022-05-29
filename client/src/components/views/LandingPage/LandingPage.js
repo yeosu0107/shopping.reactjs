@@ -5,7 +5,8 @@ import {Icon, Col, Card, Row, Carousel} from 'antd'
 import Meta from 'antd/lib/card/Meta'
 import ImageSlider from '../../utils/ImageSlider';
 import CheckBox from './Sections/CheckBox';
-import { continents } from './Sections/Datas';
+import { continents, price } from './Sections/Datas';
+import RadioBox from './Sections/RadioBox';
 
 function LandingPage() {
 
@@ -43,10 +44,8 @@ function LandingPage() {
     const getProducts = (body) => {
         axios.post('/api/product/products', body)
         .then(response => {
-            console.log(body)
             if(response.data.success) {
                 if(body.loadMore) {
-                    console.log(response.data.productInfo)
                     setProducts([...Products, ...response.data.productInfo])
                 }
                 else {
@@ -82,13 +81,32 @@ function LandingPage() {
         getProducts(body)
     }
 
+    const handlePrice = (value) => {
+        const data = price;
+        let arr = [];
+
+        for(let key in data) {
+            if(data[key]._id === parseInt(value, 0)) {
+                arr = data[key].array;
+            }
+        }
+
+        return arr;
+    }
+
     const handleFilters = (filters, category) => {
         const filter = {...Filters}
-        filter[category] = filters
-
-        ShowFilteredResult(filter)
-
+        
+        if(category === "price") {
+            let priceValue = handlePrice(filters)
+            filter[category] = priceValue
+        }
+        else {
+            filter[category] = filters
+        }
+        
         setFilters(filter)
+        ShowFilteredResult(filter)
     }
 
     return (
@@ -98,12 +116,14 @@ function LandingPage() {
             </div>
 
             {/*Filter*/}
-
-                {/*check box*/}
-                <CheckBox list={continents} handleFilters={filters => handleFilters(filters, "continent")}/>
-
-                {/*radio box*/}
-
+            <Row gutter={[16,16]}>
+                <Col lg={12} xs={24}>
+                    <CheckBox list={continents} handleFilters={filters => handleFilters(filters, "continent")}/>
+                </Col>
+                <Col lg={12} xs={24}>
+                    <RadioBox list={price} handleFilters={filters => handleFilters(filters, "price")}/>
+                </Col>
+            </Row>
             
             <Row gutter={[16,16]}>
                 {renderCards}
