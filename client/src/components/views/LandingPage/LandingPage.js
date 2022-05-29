@@ -7,6 +7,7 @@ import ImageSlider from '../../utils/ImageSlider';
 import CheckBox from './Sections/CheckBox';
 import { continents, price } from './Sections/Datas';
 import RadioBox from './Sections/RadioBox';
+import SearchBox from './Sections/SearchBox';
 
 function LandingPage() {
 
@@ -18,14 +19,14 @@ function LandingPage() {
         continents: [],
         price: []
     })
+    const [SearchTerm, setSearchTerm] = useState("")
 
 
     useEffect(() => {
         let body = {
             index: Index,
-            limit: Limit
+            limit: Limit,
         }
-
         getProducts(body)
     }, [])
 
@@ -60,24 +61,28 @@ function LandingPage() {
 
     const loadMoreHandler = () => {
         let index = Index + Limit
-
         let body = {
             index: index,
             limit: Limit,
+            filters: Filters,
+            searchTerm: SearchTerm,
             loadMore: true
         }
+
         setIndex(index)
         getProducts(body)
     }
 
-    const ShowFilteredResult = (filters) => {
+    const updateSearchTerm = (value) => {
         let body = {
             index: 0,
             limit: Limit,
-            filters: filters
+            filters: Filters,
+            searchTerm: value,
         }
 
         setIndex(0)
+        setSearchTerm(value)
         getProducts(body)
     }
 
@@ -104,10 +109,20 @@ function LandingPage() {
         else {
             filter[category] = filters
         }
-        
+
+        let body = {
+            index: 0,
+            limit: Limit,
+            filters: filter,
+            searchTerm: SearchTerm,
+        }
+ 
+        setIndex(0)
         setFilters(filter)
-        ShowFilteredResult(filter)
+        getProducts(body)
     }
+
+    
 
     return (
         <div style={{ width:'75%', margin: '3rem auto' }}>
@@ -124,6 +139,10 @@ function LandingPage() {
                     <RadioBox list={price} handleFilters={filters => handleFilters(filters, "price")}/>
                 </Col>
             </Row>
+
+            <div style={{display:'flex', justifyContent:'flex-end', margin:'1rem auto'}}>
+            <SearchBox updateSearchTerm={updateSearchTerm}/>
+            </div>
             
             <Row gutter={[16,16]}>
                 {renderCards}
