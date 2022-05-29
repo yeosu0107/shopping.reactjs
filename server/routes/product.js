@@ -104,16 +104,26 @@ router.post('/products', (req, res) => {
     }
 })
 
+// 상품 상세 정보를 조회
+router.get('/getProduct', (req, res) => {
+    let type = req.query.type
+    let productId = req.query.id
+
+    Product.find({_id:productId})
+        .populate('writer')
+        .exec((err,product) => {
+            if(err) return res.status(400).send(err)
+            return res.status(200).send({success:true, product})
+        })
+})
+
 // 이미지 파일 삭제
 router.delete('/image?:filePath', (req, res) => {
-    console.log("init delete " + req.query.filePath)
     if(fs.existsSync(req.query.filePath)) {
         try {
             fs.unlinkSync(req.query.filePath)
-            console.log('delete file')
             return res.json({success:true})
         } catch(error) {
-            console.log(`error: ${error}`)
             return res.json({success:false, err:error})
         }
     }

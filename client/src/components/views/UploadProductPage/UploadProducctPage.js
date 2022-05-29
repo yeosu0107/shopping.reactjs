@@ -41,7 +41,6 @@ function UploadProductPage(props) {
     }
 
     const updateImages = (images) => {
-        console.log(images)
         setImages(images)
     }
 
@@ -61,8 +60,6 @@ function UploadProductPage(props) {
             continent: Continents[Continent-1].key,
             images: Images,
         }
-
-        console.log(body)
 
         Axios.post("/api/product", body)
             .then(response => {
