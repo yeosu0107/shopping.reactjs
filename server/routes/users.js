@@ -18,6 +18,8 @@ router.get("/auth", auth, (req, res) => {
         lastname: req.user.lastname,
         role: req.user.role,
         image: req.user.image,
+        cart: req.user.cart,
+        history: req.user.history
     });
 });
 
@@ -66,6 +68,51 @@ router.get("/logout", auth, (req, res) => {
             success: true
         });
     });
+});
+
+router.post("/addToCart", auth, (req, res) => {
+    // User 정보 조회
+    User.findOne({_id:req.user._id}, (err, userInfo) => {
+        if(err) return res.status(400).json({success:false, err})
+
+        // 유저가 카트에 상품이 있는지 확인
+        let isAlreadyExist = false
+        userInfo.cart.forEach((item => {
+            if(item.id == req.body.productId) {
+                isAlreadyExist = true
+            }
+        }))
+
+        if(isAlreadyExist) {
+            User.findOneAndUpdate(
+                {_id:req.user._id, "cart.id":req.body.productId}, 
+                {$inc: {"cart.$.quantity":1}},
+                {new: true}, //userInfo에 업데이트 된 정보를 받으려면 new : true 옵션을 줘야함
+                (err, userInfo) => {
+                    if(err) return res.status(400).json({success:false, err})
+                    res.status(200).send(userInfo.cart)
+            })
+        }
+        else {
+            User.findOneAndUpdate(
+                {_id:req.user._id},
+                {
+                    $push: {
+                        cart:{
+                            id: req.body.productId,
+                            quantity:1 ,
+                            date: Date.now()
+                        }
+                    }
+                },
+                {new: true},
+                (err, userInfo) => {
+                    if(err) return res.status(400).json({success:false, err})
+                    res.status(200).send(userInfo.cart)
+                }
+            )
+        }
+    })
 });
 
 module.exports = router;

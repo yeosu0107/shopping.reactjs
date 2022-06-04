@@ -107,13 +107,21 @@ router.post('/products', (req, res) => {
 // 상품 상세 정보를 조회
 router.get('/getProduct', (req, res) => {
     let type = req.query.type
-    let productId = req.query.id
+    let productIds = req.query.id
 
-    Product.find({_id:productId})
+
+    if(type === "array") {
+        let ids = req.query.id.split(',')
+        productIds = ids.map(item => {
+            return item
+        })
+    }
+
+    Product.find({_id:{$in: productIds}})
         .populate('writer')
         .exec((err,product) => {
             if(err) return res.status(400).send(err)
-            return res.status(200).send({success:true, product})
+            return res.status(200).send(product)
         })
 })
 

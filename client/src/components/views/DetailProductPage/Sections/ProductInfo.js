@@ -1,10 +1,15 @@
-import React, { useEffect, useState } from 'react'
-import {Button, Descriptions} from 'antd'
+import React from 'react'
+import { Button, Descriptions } from 'antd'
+import { useDispatch } from 'react-redux'
+import { addToCart } from '../../../../_actions/user_actions'
 
 function ProductInfo(props) {
-    
+    const dispatch = useDispatch()
+
+
+    // 상품 정보를 카트에 추가
     const clickHandler = () => {
-        console.log("Click!")
+        dispatch(addToCart(props.detail._id))
     }
 
     return (
