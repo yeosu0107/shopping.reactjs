@@ -4,8 +4,8 @@ import "./CartItem.css"
 function CartItem(props)
 {
     const renderItems = () => (
-        props.products && props.products.map(product => (
-            <tr>
+        props.products && props.products.map((product, index) => (
+            <tr key={index}>
                 <td>
                     <img style = {{width:'70px'}} alt="product"
                         src={renderProductImage(product.images)} />
@@ -17,7 +17,7 @@ function CartItem(props)
                     {product.price}
                 </td>
                 <td>
-                    <button>
+                    <button onClick={()=>props.removeItem(product._id)}>
                         Remove
                     </button>
                 </td>
