@@ -5,7 +5,7 @@ import paypalConfig from '../../config/dev';
 export default class Paypal extends React.Component {
     render() {
         const onSuccess = (payment) => {
-            console.log("The payment was succeeded!", payment);
+            this.props.onSuccess(payment)
         }
  
         const onCancel = (data) => {

@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import Dropzone from 'react-dropzone'
-import {Icon} from 'antd'
+import { Icon } from 'antd'
 import axios from 'axios'
-import { OmitProps } from 'antd/lib/transfer/renderListBody'
 
 function FileUpload(props) {
 
